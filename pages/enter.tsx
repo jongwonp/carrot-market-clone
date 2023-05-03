@@ -1,11 +1,36 @@
 import Button from '@/components/button';
-import { cls } from '@/libs/utils';
+import Input from '@/components/input';
+import { cls } from '@/libs/client/utils';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+
+interface EnterForm {
+  email?: string;
+  phone?: string;
+}
 
 export default function Enter() {
+  const [submitting, setSubmitting] = useState(false);
+  const { register, watch, handleSubmit, reset } = useForm<EnterForm>();
   const [method, setMethod] = useState<'email' | 'phone'>('email');
-  const onEmailClick = () => setMethod('email');
-  const onPhoneClick = () => setMethod('phone');
+  const onEmailClick = () => {
+    reset();
+    setMethod('email');
+  };
+  const onPhoneClick = () => {
+    reset();
+    setMethod('phone');
+  };
+  const onValid = (data: EnterForm) => {
+    setSubmitting(true);
+    fetch('/api/users/enter', {
+      method: 'POST',
+      body: JSON.stringify(data),
+      headers: { 'Content-Type': 'application/json' },
+    }).then(() => {
+      setSubmitting(false);
+    });
+  };
   return (
     <div className="mt-16 px-4">
       <h3 className="text-3xl font-bold text-center">Enter to Carrot</h3>
@@ -37,37 +62,43 @@ export default function Enter() {
             </button>
           </div>
         </div>
-        <form className="flex flex-col mt-8">
-          <label htmlFor="input" className="text-sm font-medium text-gray-700">
-            {method === 'email' ? 'Email address' : null}
-            {method === 'phone' ? 'Phone number' : null}
-          </label>
+        <form
+          onSubmit={handleSubmit(onValid)}
+          className="flex flex-col mt-8 space-y-4"
+        >
+          <label
+            htmlFor="input"
+            className="text-sm font-medium text-gray-700"
+          ></label>
           <div className="mt-1 mb-5">
             {method === 'email' ? (
-              <input
-                id="input"
+              <Input
+                register={register('email', { required: true })}
+                name="email"
                 type="email"
-                className="appearance-none w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+                label="Email address"
                 required
               />
             ) : null}
             {method === 'phone' ? (
-              <div className="flex rounded-md shadow-sm">
-                <span className="flex items-center justify-center px-3 rounded-l-md border border-r-0 border-r-gray-300 text-gray-500 select-none text-sm">
-                  +82
-                </span>
-                <input
-                  id="input"
-                  type="number"
-                  className="appearance-none w-full px-3 py-2 border border-gray-300 rounded-md rounded-l-none shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-                  required
-                />
-              </div>
+              <Input
+                register={register('phone', { required: true })}
+                name="phone"
+                type="number"
+                label="Phone number"
+                kind="phone"
+                required
+              />
             ) : null}
           </div>
-          {method === 'email' ? <Button text="Get login link" /> : null}
-          {method === 'phone' ? <Button text="Get one-time password" /> : null}
+          {method === 'email' ? (
+            <Button text={submitting ? 'Loading' : 'Get login link'} />
+          ) : null}
+          {method === 'phone' ? (
+            <Button text={submitting ? 'Loading' : 'Get one-time password'} />
+          ) : null}
         </form>
+
         <div className="mt-8">
           <div className="relative">
             <div className="absolute w-full border-t border-gray-300" />
