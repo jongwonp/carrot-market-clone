@@ -1,11 +1,10 @@
-import { NextApiResponse } from 'next';
-import { NextApiRequestQuery } from 'next/dist/server/api-utils';
+import { NextApiRequest, NextApiResponse } from 'next';
 
 export default function withHandler(
   method: 'GET' | 'POST' | 'DELETE',
-  fn: (req: NextApiRequestQuery, res: NextApiResponse) => void
+  fn: (req: NextApiRequest, res: NextApiResponse) => void
 ) {
-  return async function (req: NextApiRequestQuery, res: NextApiResponse) {
+  return async function (req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== method) {
       return res.status(405).end();
     }
