@@ -29,28 +29,29 @@ async function handler(
     },
   });
   if (phone) {
-    const message = messagingFn({
-      type: 'SMS',
-      from: `${process.env.MY_PHONE}`,
-      content: 'Hello from test',
-      messages: [{ to: `${process.env.MY_PHONE}` }],
-    });
+    // const message = messagingFn({
+    //   type: 'SMS',
+    //   from: `${process.env.MY_PHONE}`,
+    //   content: `인증번호는 ${payload}입니다.`,
+    //   messages: [{ to: `${process.env.MY_PHONE}` }],
+    // });
   }
   if (email) {
-    const email = emailingFn({
-      senderAddress: 'jw03287@naver.com',
-      title: '테스트용 이메일 제목',
-      body: '테스트용 이메일 내용',
-      recipients: [
-        {
-          address: 'jw032876@gmail.com',
-          name: 'jwp',
-          type: 'R',
-        },
-      ],
-      unsubscribeMessage: '사용자 정의 수신 거부 문구',
-    });
+    // const emailtest = emailingFn({
+    //   senderAddress: 'jw03287@naver.com',
+    //   title: '테스트용 이메일 제목',
+    //   body: `인증번호는 ${payload}입니다.`,
+    //   recipients: [
+    //     {
+    //       address: email,
+    //       name: 'jwp',
+    //       type: 'R',
+    //     },
+    //   ],
+    //   unsubscribeMessage: '사용자 정의 수신 거부 문구',
+    // });
   }
+  return res.json({ ok: true });
 }
 
 export default withHandler('POST', handler);
