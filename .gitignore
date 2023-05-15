@@ -37,3 +37,5 @@ next-env.d.ts
 
 pscale_0.140.0_linux_amd64.deb
 pscale_0.140.0_linux_amd64.deb:Zone.Identifier
+
+.env
