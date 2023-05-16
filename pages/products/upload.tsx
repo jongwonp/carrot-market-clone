@@ -33,8 +33,8 @@ const Upload: NextPage = () => {
           label="Price"
           name="price"
           type="text"
-          placeholder="0"
           kind="price"
+          placeholder="0"
         />
         <TextArea label="Description" name="description" />
         <Button text="Upload item" />
