@@ -1,8 +1,16 @@
 import Button from '@/components/button';
 import Layout from '@/components/layouts';
 import type { NextPage } from 'next';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import useSWR from 'swr';
 
 const ItemDetail: NextPage = () => {
+  const router = useRouter();
+  const { data } = useSWR(
+    router.query.id ? `/api/products/${router.query.id}` : null
+  );
+  console.log('data', data);
   return (
     <Layout canGoBack>
       <div className="px-4 py-4">
@@ -11,20 +19,33 @@ const ItemDetail: NextPage = () => {
           <div className="flex cursor-pointer py-3 border-t border-b items-center space-x-3">
             <div className="w-12 h-12 rounded-full bg-slate-300" />
             <div>
-              <p className="text-sm font-medium text-gray-700">Steve Jebs</p>
-              <p className="text-xs font-medium text-gray-500">
-                View profile &rarr;
+              <p className="text-sm font-medium text-gray-700">
+                {data?.product?.user?.name}
               </p>
+              <Link
+                href={`/user/profiles/${data?.product?.user?.id}`}
+                className="text-xs font-medium text-gray-500"
+              >
+                View profile &rarr;
+              </Link>
             </div>
           </div>
           <div className="mt-5">
-            <h1 className="text-3xl font-bold text-gray-900">Galaxy S50</h1>
-            <span className="text-3xl mt-3 block text-gray-900">$140</span>
-            <p className="text-base my-6 text-gray-700">
-              abc abc abc abc abc abc abcabc abc abcabc abc abcabc abc abcabc
-              abc abcabc abc abcabc abc abcabc abc abc abc abc abcabc abc abcabc
-              abc abc abc abc abcabc abc abcabc abc abc abc abc abc
-            </p>
+            {data ? (
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  {data?.product?.name}
+                </h1>
+                <span className="text-3xl mt-3 block text-gray-900">
+                  {data?.product?.price}
+                </span>
+                <p className="text-base my-6 text-gray-700">
+                  {data?.product?.description}
+                </p>
+              </div>
+            ) : (
+              'Loading...'
+            )}
             <div className="flex items-center justify-between space-x-2">
               <Button large text="Talk to seller" />
               <button className="p-3 rounded-md flex items-center justify-center text-gray-400 hover:bg-gray-100 hover:text-gray-500">
