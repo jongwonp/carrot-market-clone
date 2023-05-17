@@ -1,12 +1,13 @@
 import Button from '@/components/button';
 import Layout from '@/components/layouts';
 import useMutation from '@/libs/client/useMutation';
+import useUser from '@/libs/client/useUser';
 import { cls } from '@/libs/client/utils';
 import { Product, User } from '@prisma/client';
 import type { NextPage } from 'next';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import useSWR from 'swr';
+import useSWR, { useSWRConfig } from 'swr';
 
 interface ProductWithUser extends Product {
   user: User;
@@ -20,12 +21,17 @@ interface ItemDatilResponse {
 }
 
 const ItemDetail: NextPage = () => {
+  const { user, isLoading } = useUser();
   const router = useRouter();
-  const { data } = useSWR<ItemDatilResponse>(
+  const { mutate } = useSWRConfig();
+  const { data, mutate: boundMutate } = useSWR<ItemDatilResponse>(
     router.query.id ? `/api/products/${router.query.id}` : null
   );
   const [toggleFav] = useMutation(`/api/products/${router.query.id}/fav`);
   const onFavClick = () => {
+    if (!data) return;
+    boundMutate((prev) => prev && { ...prev, isLiked: !prev.isLiked }, false);
+    // mutate('/api/users/me', (prev: any) => ({ ok: false }), false);
     toggleFav({});
   };
   return (
@@ -77,7 +83,7 @@ const ItemDetail: NextPage = () => {
                 {data?.isLiked ? (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5"
+                    className="h-6 w-6"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
