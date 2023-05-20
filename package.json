@@ -26,10 +26,14 @@
     "react-hook-form": "^7.43.9",
     "swr": "^2.1.5",
     "tailwindcss": "3.3.1",
+    "ts-node": "^10.9.1",
     "typescript": "5.0.4"
   },
   "devDependencies": {
     "@types/crypto-js": "^4.1.1",
     "prisma": "^4.13.0"
+  },
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   }
 }
