@@ -4,8 +4,8 @@ import Layout from '@/components/layouts';
 import useMutation from '@/libs/client/useMutation';
 import useUser from '@/libs/client/useUser';
 import { NextPage } from 'next';
-import { Router, useRouter } from 'next/router';
-import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 interface EditProfileForm {
@@ -13,6 +13,7 @@ interface EditProfileForm {
   phone?: string;
   name?: string;
   formErrors?: string;
+  avatar?: FileList;
 }
 
 interface EditProfileResponse {
@@ -29,6 +30,7 @@ const EditProfile: NextPage = () => {
     handleSubmit,
     setError,
     formState: { errors },
+    watch,
   } = useForm<EditProfileForm>();
   useEffect(() => {
     if (user?.name) setValue('name', user?.name);
@@ -53,12 +55,27 @@ const EditProfile: NextPage = () => {
     if (data?.ok) {
       router.push('/profile');
     }
-  }, [data, setError, router]);
+  }, [data, setError]);
+  const [avatarPreview, setAvatarPreview] = useState('');
+  const avatar = watch('avatar');
+  useEffect(() => {
+    if (avatar && avatar.length > 0) {
+      const file = avatar[0];
+      setAvatarPreview(URL.createObjectURL(file));
+    }
+  }, [avatar]);
   return (
     <Layout canGoBack title="Edit Profile">
       <form onSubmit={handleSubmit(onValid)} className="py-10 px-4 space-y-4">
         <div className="flex items-center space-x-3">
-          <div className="w-14 h-14 rounded-full bg-slate-500" />
+          {avatarPreview ? (
+            <img
+              src={avatarPreview}
+              className="w-14 h-14 rounded-full bg-slate-500"
+            />
+          ) : (
+            <div className="w-14 h-14 rounded-full bg-slate-500" />
+          )}
           <label
             htmlFor="picture"
             className="cursor-pointer py-2 px-3
@@ -66,6 +83,7 @@ const EditProfile: NextPage = () => {
           >
             Change photo
             <input
+              {...register('avatar')}
               id="picture"
               type="file"
               className="hidden"
