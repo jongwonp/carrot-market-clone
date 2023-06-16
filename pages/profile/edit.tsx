@@ -39,14 +39,32 @@ const EditProfile: NextPage = () => {
   }, [user, setValue]);
   const [editProfile, { data, loading }] =
     useMutation<EditProfileResponse>(`/api/users/me`);
-  const onValid = ({ email, phone, name }: EditProfileForm) => {
+  const onValid = async ({ email, phone, name, avatar }: EditProfileForm) => {
     if (loading) return;
     if (email === '' && phone === '' && name === '') {
       return setError('formErrors', {
         message: '이메일 또는 전화번호 둘 중 하나는 필수입니다.',
       });
     }
-    editProfile({ email, phone, name });
+    if (avatar && avatar.length > 0 && user) {
+      const form = new FormData();
+      form.append('file', avatar[0], user?.id + '');
+      console.log(form.getAll('file'));
+      const naverRequest = await (
+        await fetch('/api/files', { method: 'POST', body: form })
+      ).json();
+      console.log(naverRequest);
+      return;
+      editProfile({
+        email,
+        phone,
+        name,
+        avatar,
+        // avatarURL
+      });
+    } else {
+      editProfile({ email, phone, name });
+    }
   };
   useEffect(() => {
     if (data && !data.ok) {
@@ -62,6 +80,7 @@ const EditProfile: NextPage = () => {
     if (avatar && avatar.length > 0) {
       const file = avatar[0];
       setAvatarPreview(URL.createObjectURL(file));
+      // avatarPreview는 업로드할 이미지 파일 데이터의 주소. 브라우저의 메모리에 있는 주소임.
     }
   }, [avatar]);
   return (
