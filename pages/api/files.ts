@@ -1,54 +1,55 @@
-import withHandler, { ResponseType } from '@/libs/server/withHandler';
-import { NextApiRequest, NextApiResponse } from 'next';
-import { withApiSession } from '@/libs/server/withSession';
-import createAuthorization, { timeStamp } from './naverAuthorization';
-import CryptoJS from 'crypto-js';
+import withHandler, { ResponseType } from "@/libs/server/withHandler";
+import { NextApiRequest, NextApiResponse } from "next";
+import { withApiSession } from "@/libs/server/withSession";
+import AWS from "aws-sdk";
+import formidable from "formidable";
 
-// 강의대로라면 CF에 GET요청으로 이미지를 업로드할 URL을 받는 API핸들러.
-// naver에서는 object storage에 put 요청으로 업로드해야하니 PutObject를 하면 될듯?
-
-// const headers = new Headers();
-// headers.append('Content-Length', 'application/json');
-// headers.append('Host', 'https://kr.object.ncloudstorage.com');
-// headers.append('x-amz-date', `${timeStamp}`);
-// headers.append('x-amz-content-sha256', CryptoJS.SHA256());
-
-// const headerKeyList: string[] = [];
-// const headerValueList: string[] = [];
-
-// for (const key of headers.keys()) {
-//   headerKeyList.push(key);
-// }
-// for (const value of headers.values()) {
-//   headerValueList.push(value);
-// }
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+};
 
 async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseType>
 ) {
-  console.log(req.body);
-  // const response = await (
-  //   await fetch(`${headers.get('Host')}/carrot-market-clone-bucket/`, {
-  //     method: 'POST',
-  //     headers: {
-  //       ...headers,
-  //       Authorization: createAuthorization(
-  //         'POST',
-  //         headerKeyList,
-  //         headerValueList
-  //       ),
-  //     },
-  //     body: JSON.stringify({}),
-  //   })
-  // ).json();
-  // res.json({
-  //   ok: true,
-  //   url: '',
-  // });
-  res.json({ ok: true, data: 'fetch결과 edit.tsx에서 돌려받기' });
+  const endpoint = new AWS.Endpoint("https://kr.object.ncloudstorage.com");
+  const region = "kr-standard";
+  const accessKey = process.env.NAVER_CLOUD_API_ACCESS_KEY + "";
+  const secretKey = process.env.NAVER_CLOUD_API_SECRET_KEY + "";
+
+  const S3 = new AWS.S3({
+    endpoint: endpoint.href,
+    region,
+    credentials: {
+      accessKeyId: accessKey,
+      secretAccessKey: secretKey,
+    },
+  });
+
+  const bucketName = "carrot-market-clone-bucket";
+  const imgFile = req.body;
+
+  const form = formidable({});
+
+  await form.parse(req, (err, fields, files) => {
+    console.log(files.file);
+  });
+
+  // (async () => {
+  //   let objectName = "샘플 파일.png";
+
+  //   await S3.putObject({
+  //     Bucket: bucketName,
+  //     Key: objectName,
+  //     Body: imgFile,
+  //   }).promise();
+  // })();
+
+  res.json({ ok: true });
 }
 
 export default withApiSession(
-  withHandler({ methods: ['GET', 'POST'], handler })
+  withHandler({ methods: ["GET", "POST"], handler })
 );

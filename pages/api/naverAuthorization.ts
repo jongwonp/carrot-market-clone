@@ -46,8 +46,7 @@ function createCanonicalHeaders(
 
 export default function createAuthorization(
   httpMethod: string,
-  headerKeyList: string[],
-  headerValueList: string[]
+  headers: Headers
 ) {
   const signedHeaders = createSignedHeaders(headerKeyList);
 

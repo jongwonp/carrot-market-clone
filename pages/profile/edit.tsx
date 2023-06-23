@@ -1,12 +1,12 @@
-import Button from '@/components/button';
-import Input from '@/components/input';
-import Layout from '@/components/layouts';
-import useMutation from '@/libs/client/useMutation';
-import useUser from '@/libs/client/useUser';
-import { NextPage } from 'next';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import Button from "@/components/button";
+import Input from "@/components/input";
+import Layout from "@/components/layouts";
+import useMutation from "@/libs/client/useMutation";
+import useUser from "@/libs/client/useUser";
+import { NextPage } from "next";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 interface EditProfileForm {
   email?: string;
@@ -33,25 +33,27 @@ const EditProfile: NextPage = () => {
     watch,
   } = useForm<EditProfileForm>();
   useEffect(() => {
-    if (user?.name) setValue('name', user?.name);
-    if (user?.email) setValue('email', user?.email);
-    if (user?.phone) setValue('phone', user?.phone);
+    if (user?.name) setValue("name", user?.name);
+    if (user?.email) setValue("email", user?.email);
+    if (user?.phone) setValue("phone", user?.phone);
   }, [user, setValue]);
   const [editProfile, { data, loading }] =
     useMutation<EditProfileResponse>(`/api/users/me`);
   const onValid = async ({ email, phone, name, avatar }: EditProfileForm) => {
     if (loading) return;
-    if (email === '' && phone === '' && name === '') {
-      return setError('formErrors', {
-        message: '이메일 또는 전화번호 둘 중 하나는 필수입니다.',
+    if (email === "" && phone === "" && name === "") {
+      return setError("formErrors", {
+        message: "이메일 또는 전화번호 둘 중 하나는 필수입니다.",
       });
     }
     if (avatar && avatar.length > 0 && user) {
       const form = new FormData();
-      form.append('file', avatar[0], user?.id + '');
-      console.log(form.getAll('file'));
+      form.append("file", avatar[0]);
       const naverRequest = await (
-        await fetch('/api/files', { method: 'POST', body: form })
+        await fetch("/api/files", {
+          method: "POST",
+          body: form,
+        })
       ).json();
       console.log(naverRequest);
       return;
@@ -68,19 +70,18 @@ const EditProfile: NextPage = () => {
   };
   useEffect(() => {
     if (data && !data.ok) {
-      setError('formErrors', { message: data.error });
+      setError("formErrors", { message: data.error });
     }
     if (data?.ok) {
-      router.push('/profile');
+      router.push("/profile");
     }
   }, [data, setError]);
-  const [avatarPreview, setAvatarPreview] = useState('');
-  const avatar = watch('avatar');
+  const [avatarPreview, setAvatarPreview] = useState("");
+  const avatar = watch("avatar");
   useEffect(() => {
     if (avatar && avatar.length > 0) {
       const file = avatar[0];
       setAvatarPreview(URL.createObjectURL(file));
-      // avatarPreview는 업로드할 이미지 파일 데이터의 주소. 브라우저의 메모리에 있는 주소임.
     }
   }, [avatar]);
   return (
@@ -102,7 +103,7 @@ const EditProfile: NextPage = () => {
           >
             Change photo
             <input
-              {...register('avatar')}
+              {...register("avatar")}
               id="picture"
               type="file"
               className="hidden"
@@ -111,21 +112,21 @@ const EditProfile: NextPage = () => {
           </label>
         </div>
         <Input
-          register={register('name')}
+          register={register("name")}
           required={false}
           label="Name"
           name="name"
           type="text"
         />
         <Input
-          register={register('email')}
+          register={register("email")}
           required={false}
           label="Email address"
           name="email"
           type="email"
         />
         <Input
-          register={register('phone')}
+          register={register("phone")}
           required={false}
           label="Phone number"
           name="phone"
@@ -137,7 +138,7 @@ const EditProfile: NextPage = () => {
             {errors.formErrors.message}
           </span>
         ) : null}
-        <Button text={loading ? 'Loading...' : 'Update profile'} />
+        <Button text={loading ? "Loading..." : "Update profile"} />
       </form>
     </Layout>
   );
