@@ -56,13 +56,12 @@ const EditProfile: NextPage = () => {
         })
       ).json();
       console.log(naverRequest);
-      return;
+
       editProfile({
         email,
         phone,
         name,
-        avatar,
-        // avatarURL
+        avatar: `${process.env.NAVER_CLOUD_CDN}/${naverRequest.fileName}`,
       });
     } else {
       editProfile({ email, phone, name });

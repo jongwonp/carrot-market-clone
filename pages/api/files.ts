@@ -3,6 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { withApiSession } from "@/libs/server/withSession";
 import AWS from "aws-sdk";
 import formidable from "formidable";
+import fs from "fs";
 
 export const config = {
   api: {
@@ -19,6 +20,7 @@ async function handler(
   const accessKey = process.env.NAVER_CLOUD_API_ACCESS_KEY + "";
   const secretKey = process.env.NAVER_CLOUD_API_SECRET_KEY + "";
 
+  // NAVER가 사용하는 API와 호환되는 AWS의 API를 사용해서 사진 업로드할 예정
   const S3 = new AWS.S3({
     endpoint: endpoint.href,
     region,
@@ -29,25 +31,26 @@ async function handler(
   });
 
   const bucketName = "carrot-market-clone-bucket";
-  const imgFile = req.body;
 
+  // req의 body의 내용인 formData parsing을 위해 외부 라이브러리 formidable 사용
   const form = formidable({});
+  const [fields, files] = await form.parse(req);
 
-  await form.parse(req, (err, fields, files) => {
-    console.log(files.file);
-  });
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = (today.getMonth() + 1).toString().padStart(2, "0");
+  const date = today.getDate();
 
-  // (async () => {
-  //   let objectName = "샘플 파일.png";
+  let objectName = `${year}${month}${date}_${Date.now()}.png`;
 
-  //   await S3.putObject({
-  //     Bucket: bucketName,
-  //     Key: objectName,
-  //     Body: imgFile,
-  //   }).promise();
-  // })();
+  const response = S3.putObject({
+    Bucket: bucketName,
+    Key: objectName,
+    Body: fs.createReadStream(files.file[0].filepath),
+    ContentType: "image/png",
+  }).promise();
 
-  res.json({ ok: true });
+  res.json({ ok: true, fileName: objectName });
 }
 
 export default withApiSession(
