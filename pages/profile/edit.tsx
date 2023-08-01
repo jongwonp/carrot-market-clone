@@ -36,6 +36,10 @@ const EditProfile: NextPage = () => {
     if (user?.name) setValue("name", user?.name);
     if (user?.email) setValue("email", user?.email);
     if (user?.phone) setValue("phone", user?.phone);
+    if (user?.avatar)
+      setAvatarPreview(
+        `https://irqcgxrqphys18641085.cdn.ntruss.com/${user.avatar}?type=f&w=64&h=64`
+      );
   }, [user, setValue]);
   const [editProfile, { data, loading }] =
     useMutation<EditProfileResponse>(`/api/users/me`);
@@ -55,13 +59,13 @@ const EditProfile: NextPage = () => {
           body: form,
         })
       ).json();
-      console.log(naverRequest);
+      console.log(naverRequest.fileName);
 
       editProfile({
         email,
         phone,
         name,
-        avatar: `${process.env.NAVER_CLOUD_CDN}/${naverRequest.fileName}`,
+        avatarId: naverRequest.fileName,
       });
     } else {
       editProfile({ email, phone, name });

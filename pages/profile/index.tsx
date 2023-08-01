@@ -1,10 +1,10 @@
-import Layout from '@/components/layouts';
-import useUser from '@/libs/client/useUser';
-import { cls } from '@/libs/client/utils';
-import { Review, User } from '@prisma/client';
-import type { NextPage } from 'next';
-import Link from 'next/link';
-import useSWR from 'swr';
+import Layout from "@/components/layouts";
+import useUser from "@/libs/client/useUser";
+import { cls } from "@/libs/client/utils";
+import { Review, User } from "@prisma/client";
+import type { NextPage } from "next";
+import Link from "next/link";
+import useSWR from "swr";
 
 interface ReviewWithUser extends Review {
   createdBy: User;
@@ -17,14 +17,14 @@ interface ReviewResponse {
 
 const Profile: NextPage = () => {
   const { user } = useUser();
-  const { data } = useSWR<ReviewResponse>('/api/reviews');
+  const { data } = useSWR<ReviewResponse>("/api/reviews");
   return (
     <Layout title="프로필" hasTabBar>
       <div className="px-4">
         <div className="flex items-center mt-4 space-x-3">
           {user?.avatar ? (
             <img
-              src={`https://`}
+              src={`https://irqcgxrqphys18641085.cdn.ntruss.com/${user.avatar}?type=f&w=64&h=64`}
               className="w-16 h-16 bg-slate-500 rounded-full"
             />
           ) : (
@@ -121,10 +121,10 @@ const Profile: NextPage = () => {
                     <svg
                       key={star}
                       className={cls(
-                        'h-5 w-5',
+                        "h-5 w-5",
                         review.score >= star
-                          ? 'text-yellow-400'
-                          : 'text-gray-400'
+                          ? "text-yellow-400"
+                          : "text-gray-400"
                       )}
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 20 20"
