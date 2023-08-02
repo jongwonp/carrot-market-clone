@@ -1,13 +1,13 @@
-import Button from '@/components/button';
-import Layout from '@/components/layouts';
-import useMutation from '@/libs/client/useMutation';
-import useUser from '@/libs/client/useUser';
-import { cls } from '@/libs/client/utils';
-import { Product, User } from '@prisma/client';
-import type { NextPage } from 'next';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import useSWR, { useSWRConfig } from 'swr';
+import Button from "@/components/button";
+import Layout from "@/components/layouts";
+import useMutation from "@/libs/client/useMutation";
+import useUser from "@/libs/client/useUser";
+import { cls } from "@/libs/client/utils";
+import { Product, User } from "@prisma/client";
+import type { NextPage } from "next";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import useSWR, { useSWRConfig } from "swr";
 
 interface ProductWithUser extends Product {
   user: User;
@@ -38,9 +38,15 @@ const ItemDetail: NextPage = () => {
     <Layout canGoBack>
       <div className="px-4 py-4">
         <div className="mb-8">
-          <div className="h-96 bg-slate-300" />
+          <img
+            src={`https://csffbsnvmyxm18002279.cdn.ntruss.com/${data?.product.image}`}
+            className="h-96 bg-slate-300"
+          />
           <div className="flex cursor-pointer py-3 border-t border-b items-center space-x-3">
-            <div className="w-12 h-12 rounded-full bg-slate-300" />
+            <img
+              src={`https://irqcgxrqphys18641085.cdn.ntruss.com/${data?.product.user.avatar}?type=f&w=64&h=64`}
+              className="w-12 h-12 rounded-full bg-slate-300"
+            />
             <div>
               <p className="text-sm font-medium text-gray-700">
                 {data?.product?.user?.name}
@@ -67,17 +73,17 @@ const ItemDetail: NextPage = () => {
                 </p>
               </div>
             ) : (
-              'Loading...'
+              "Loading..."
             )}
             <div className="flex items-center justify-between space-x-2">
               <Button large text="Talk to seller" />
               <button
                 onClick={onFavClick}
                 className={cls(
-                  'p-3 rounded-md flex items-center justify-center hover:bg-gray-100',
+                  "p-3 rounded-md flex items-center justify-center hover:bg-gray-100",
                   data?.isLiked
-                    ? 'text-red-500  hover:text-red-600'
-                    : 'text-gray-400  hover:text-gray-500'
+                    ? "text-red-500  hover:text-red-600"
+                    : "text-gray-400  hover:text-gray-500"
                 )}
               >
                 {data?.isLiked ? (

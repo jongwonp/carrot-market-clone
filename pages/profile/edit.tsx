@@ -59,7 +59,6 @@ const EditProfile: NextPage = () => {
           body: form,
         })
       ).json();
-      console.log(naverRequest.fileName);
 
       editProfile({
         email,
