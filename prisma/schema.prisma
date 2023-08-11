@@ -167,6 +167,9 @@ model Stream {
   user      User     @relation(fields: [userId], references: [id],onDelete: Cascade)
   userId Int
   messages Message[]
+  ncpLiveId String
+  ncpLiveUrl String
+  ncpLiveKey String
 }
 
 model Message {
