@@ -1,13 +1,13 @@
-import type { NextPage } from 'next';
-import Message from '../../components/message';
-import Layout from '@/components/layouts';
-import useSWR from 'swr';
-import { useRouter } from 'next/router';
-import type { Stream } from '@prisma/client';
-import { useForm } from 'react-hook-form';
-import useMutation from '@/libs/client/useMutation';
-import useUser from '@/libs/client/useUser';
-import { useEffect, useRef } from 'react';
+import type { NextPage } from "next";
+import Message from "../../components/message";
+import Layout from "@/components/layouts";
+import useSWR from "swr";
+import { useRouter } from "next/router";
+import type { Stream } from "@prisma/client";
+import { useForm } from "react-hook-form";
+import useMutation from "@/libs/client/useMutation";
+import useUser from "@/libs/client/useUser";
+import { useEffect, useRef } from "react";
 
 interface StreamMessage {
   message: string;
@@ -69,7 +69,10 @@ const Stream: NextPage = () => {
   return (
     <Layout canGoBack>
       <div className="py-10 px-4  space-y-4">
-        <div className="w-full rounded-md shadow-sm bg-slate-300 aspect-video" />
+        <iframe
+          className="w-full aspect-video rounded-md shadow-sm"
+          src={`https://dbpldvvjxxvy18849057.cdn.ntruss.com/live/video/ls-20230808194613-Gu2mn/1080p-16-9/playlist.m3u8`}
+        ></iframe>
         <div className="mt-5">
           <h1 className="text-3xl font-bold text-gray-900">
             {data?.stream?.name}
@@ -98,7 +101,7 @@ const Stream: NextPage = () => {
             >
               <input
                 type="text"
-                {...register('message', { required: true })}
+                {...register("message", { required: true })}
                 className="shadow-sm rounded-full w-full border-gray-300 focus:ring-orange-500 focus:outline-none pr-12 focus:border-orange-500"
               />
               <div className="absolute inset-y-0 flex py-1.5 pr-1.5 right-0">
