@@ -1,9 +1,10 @@
-import FloatedButton from '@/components/floated-button';
-import Layout from '@/components/layouts';
-import { Stream } from '@prisma/client';
-import { NextPage } from 'next';
-import Link from 'next/link';
-import useSWR from 'swr';
+import FloatedButton from "@/components/floated-button";
+import Layout from "@/components/layouts";
+import { Stream } from "@prisma/client";
+import { NextPage } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import useSWR from "swr";
 
 interface StreamsResponse {
   ok: boolean;
@@ -18,7 +19,13 @@ const Streams: NextPage = () => {
         {data?.streams.map((stream) => (
           <Link key={stream.id} href={`/streams/${stream.id}`}>
             <div className="pt-4 px-4 block">
-              <div className="w-full rounded-md shadow-sm bg-slate-300 aspect-video" />
+              <div className="w-full relative overflow-hidden rounded-md shadow-sm bg-slate-300 aspect-video">
+                <Image
+                  alt="thumbnail"
+                  fill
+                  src={`https://${stream.cdnDomain}/live/image/${stream.ncpLiveId}/thumbnail.jpg`}
+                />
+              </div>
               <h1 className="text-gray-900 font-bold text-2xl mt-2">
                 {stream.name}
               </h1>

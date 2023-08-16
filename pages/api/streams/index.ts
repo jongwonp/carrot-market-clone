@@ -49,7 +49,11 @@ async function handler(
 
     //* NCP Live Station 채널 정보를 요청한 뒤, 채널의 key와 url을 응답으로 받아옴 */
     const {
-      content: { streamKey, publishUrl },
+      content: {
+        streamKey,
+        publishUrl,
+        cdn: { cdnDomain },
+      },
     } = await fetch(
       `https://livestation.apigw.ntruss.com/api/v2/channels/${channelId}`,
       {
@@ -72,6 +76,7 @@ async function handler(
         ncpLiveId: channelId,
         ncpLiveKey: streamKey,
         ncpLiveUrl: publishUrl,
+        cdnDomain: cdnDomain,
         name,
         price,
         description,

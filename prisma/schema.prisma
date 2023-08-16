@@ -170,6 +170,7 @@ model Stream {
   ncpLiveId String
   ncpLiveUrl String
   ncpLiveKey String
+  cdnDomain String
 }
 
 model Message {
