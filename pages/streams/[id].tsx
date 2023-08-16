@@ -22,9 +22,18 @@ interface StreamWithMessages extends Stream {
   messages: StreamMessage[];
 }
 
+interface StreamContent {
+  name: string;
+  url: string;
+  resolution: string;
+  videoBitrate: string;
+  audioBitrate: string;
+}
+
 interface StreamResponse {
   ok: true;
   stream: StreamWithMessages;
+  content: StreamContent[];
 }
 
 interface MessageForm {
@@ -71,7 +80,7 @@ const Stream: NextPage = () => {
       <div className="py-10 px-4  space-y-4">
         <iframe
           className="w-full aspect-video rounded-md shadow-sm"
-          src={`https://dbpldvvjxxvy18849057.cdn.ntruss.com/live/video/ls-20230808194613-Gu2mn/1080p-16-9/playlist.m3u8`}
+          src={data?.content[1]?.url}
         ></iframe>
         <div className="mt-5">
           <h1 className="text-3xl font-bold text-gray-900">
