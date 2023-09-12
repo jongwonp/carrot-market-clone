@@ -7,7 +7,8 @@ import type { Stream } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import useMutation from "@/libs/client/useMutation";
 import useUser from "@/libs/client/useUser";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import ReactPlayer from "react-player";
 
 interface StreamMessage {
   message: string;
@@ -75,13 +76,14 @@ const Stream: NextPage = () => {
   useEffect(() => {
     scrollRef.current?.scrollIntoView();
   });
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   return (
     <Layout canGoBack>
       <div className="py-10 px-4  space-y-4">
-        <iframe
-          className="w-full aspect-video rounded-md shadow-sm"
-          src={data?.content[1]?.url}
-        ></iframe>
+        {isClient ? <ReactPlayer url={data?.content[1]?.url} /> : "Live Stream"}
         <div className="mt-5">
           <h1 className="text-3xl font-bold text-gray-900">
             {data?.stream?.name}
